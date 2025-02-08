@@ -1,17 +1,9 @@
-import {
-    Alert,
-    Button,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-    FlatList,
-    ActivityIndicator,
-    TouchableOpacity
+import {Alert, Button, StyleSheet, Text, TextInput,View, FlatList, ActivityIndicator, TouchableOpacity
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+
 
 function Customer() {
     const [name, setName] = useState('');
