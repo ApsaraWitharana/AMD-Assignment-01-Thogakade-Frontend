@@ -1,4 +1,4 @@
-export class ItemModels {
+export class ItemModel{
     ItemID:number
     Name:string
     Quantity:number

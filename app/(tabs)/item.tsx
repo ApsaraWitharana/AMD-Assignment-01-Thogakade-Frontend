@@ -10,13 +10,13 @@ import {
     TouchableOpacity,
 } from "react-native";
 import {Ionicons} from "@expo/vector-icons";
-import {ItemModels} from "../../reducers/ItemModels";
+import {ItemModel} from "../../model/ItemModel";
 
 const ItemComponent: React.FC = () => {
     const [name, setName] = useState<string>('');
     const [price, setPrice] = useState<string>('');
     const [qty, setQty] = useState<string>('');
-    const [items, setItems] = useState<ItemModels[]>([]);
+    const [items, setItems] = useState<ItemModel[]>([]);
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
     const handleAddItem = () => {
@@ -25,7 +25,7 @@ const ItemComponent: React.FC = () => {
             return;
         }
 
-        const newItem = new ItemModels(
+        const newItem = new ItemModel(
             items.length + 1,
             name,
             parseInt(qty),
