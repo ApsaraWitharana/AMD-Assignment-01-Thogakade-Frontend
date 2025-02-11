@@ -1,25 +1,22 @@
-import {Alert, Button, StyleSheet, Text, TextInput,View, FlatList, ActivityIndicator, TouchableOpacity
-} from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from 'react';
+import { Alert, Button, StyleSheet, Text, TextInput, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
+import {CustomerModel} from "../../model/CustomerModel";
 
-
-function Customer() {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [address, setAddress] = useState('');
-    const [customers, setCustomers] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [editingIndex, setEditingIndex] = useState(null);
+const Customer: React.FC = () => {
+    const [name, setName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [address, setAddress] = useState<string>('');
+    const [customers, setCustomers] = useState<CustomerModel[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
     const handleAddCustomer = () => {
         if (!name || !email || !address) {
-            Alert.alert("Error", "All fields are required!");
+            Alert.alert('Error', 'All fields are required!');
             return;
         }
-
-        Alert.alert("Customer added successfully.");
 
         setLoading(true);
 
@@ -27,56 +24,65 @@ function Customer() {
             if (editingIndex !== null) {
                 // Update existing customer
                 const updatedCustomers = [...customers];
-                updatedCustomers[editingIndex] = { name, email, address };
+                updatedCustomers[editingIndex] = new CustomerModel(
+                    updatedCustomers[editingIndex].CustomerID,
+                    name,
+                    address,
+                    email
+                );
                 setCustomers(updatedCustomers);
                 setEditingIndex(null);
             } else {
                 // Add new customer
-                setCustomers([...customers, { name, email, address }]);
+                const newCustomerID = customers.length > 0 ? customers[customers.length - 1].CustomerID + 1 : 1;
+                const newCustomer = new CustomerModel(newCustomerID, name, address, email);
+                setCustomers([...customers, newCustomer]);
             }
 
             setName('');
             setEmail('');
             setAddress('');
             setLoading(false);
+            Alert.alert('Success', 'Customer saved successfully.');
         }, 1000);
     };
 
-    const handleEdit = (index) => {
-        setName(customers[index].name);
-        setEmail(customers[index].email);
-        setAddress(customers[index].address);
+    const handleEdit = (index: number) => {
+        const customer = customers[index];
+        setName(customer.Name);
+        setEmail(customer.Email);
+        setAddress(customer.Address);
         setEditingIndex(index);
     };
 
-    const handleDelete = (index) => {
+    const handleDelete = (index: number) => {
         const updatedCustomers = customers.filter((_, i) => i !== index);
         setCustomers(updatedCustomers);
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{editingIndex !== null ? "Edit Customer" : "Add Customer"}</Text>
+            <Text style={styles.title}>{editingIndex !== null ? 'Edit Customer' : 'Add Customer'}</Text>
 
             <TextInput style={styles.input} placeholder="Name" value={name} onChangeText={setName} />
             <TextInput style={styles.input} placeholder="Email" keyboardType="email-address" value={email} onChangeText={setEmail} />
             <TextInput style={styles.input} placeholder="Address" value={address} onChangeText={setAddress} />
 
             {loading ? (
-                <ActivityIndicator size="large" color="#007bff" />
+                <ActivityIndicator size="small" color="#007bff" />
             ) : (
-                <Button title={editingIndex !== null ? "Update" : "Add"} onPress={handleAddCustomer} />
+                <Button title={editingIndex !== null ? 'Update' : 'Add'} onPress={handleAddCustomer} />
             )}
 
             <FlatList
                 data={customers}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item) => item.CustomerID.toString()}
                 renderItem={({ item, index }) => (
                     <View style={styles.customerRow}>
                         <View style={styles.customerInfo}>
-                            <Text style={styles.customerText}>{item.name}</Text>
-                            <Text style={styles.customerText}>{item.email}</Text>
-                            <Text style={styles.customerText}>{item.address}</Text>
+                            <Text style={styles.customerText}>{item.Name}</Text>
+                            <Text style={styles.customerText}>{item.Email}</Text>
+                            <Text style={styles.customerText}>{item.Address}</Text>
                         </View>
                         <View style={styles.iconContainer}>
                             <TouchableOpacity onPress={() => handleEdit(index)}>
@@ -93,7 +99,7 @@ function Customer() {
             <StatusBar style="auto" />
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -115,6 +121,13 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 10,
         backgroundColor: '#fff',
+    },
+    Button:{
+        cursor: 'pointer',
+        borderColor: '#054305',
+        borderRadius: 25,
+        width:'50%',
+
     },
     customerRow: {
         flexDirection: 'row',

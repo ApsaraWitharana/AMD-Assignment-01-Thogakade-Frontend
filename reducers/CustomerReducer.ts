@@ -11,8 +11,6 @@ const api = axios.create({
     },
 
 });
-
-
 export const saveCustomer =createAsyncThunk(
     'customer/saveCustomer',
     async (customer:CustomerModel)=>{
